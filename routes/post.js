@@ -7,8 +7,8 @@ const requireLogin = require('../middleware/requireLogin')
 
 
 router.post('/createpost',requireLogin,(req,res)=>{
-    const {title,body} = req.body
-    if(!title ||!body){
+    const {title,body,pic} = req.body
+    if(!title ||!body ||!pic){
         return res.status(200).json({error:"Please add all the fields"})
     }
 
@@ -18,6 +18,7 @@ router.post('/createpost',requireLogin,(req,res)=>{
     const post = new Post({
         title,
         body,
+        photo:pic,
         postedBy:req.user
     })
     post.save().then((result)=>{

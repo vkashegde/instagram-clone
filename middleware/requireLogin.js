@@ -9,7 +9,7 @@ module.exports = (req,res,next)=>{
     if(!authorization){
        return res.status(401).json({error:'You must be logged in'})
     }
-   const token =  authorization.replace('Gobi ','')
+   const token =  authorization.replace('Bearer ','')
    jwt.verify(token,JWT_SECRET,(error,payload)=>{
        if(error){
           return res.status(401).json({error:'You Must be logged in'})

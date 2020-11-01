@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const mongoose = require('mongoose')
-const PORT = process.env.PORT||3000;
+const PORT = process.env.PORT||5000;
 const {MONGOURI} = require('./keys')
 
 
@@ -12,6 +13,8 @@ mongoose.connection.on('connected',()=>{
 mongoose.connection.on('error',(err)=>{
     console.log('Cant Connect',err)
 })
+
+app.use(cors())
 
 
 require('./models/user')
