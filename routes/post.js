@@ -1,3 +1,4 @@
+const { request } = require('express');
 const express = require('express')
 const router  = express.Router();
 const mongoose = require('mongoose')
@@ -28,7 +29,7 @@ router.post('/createpost',requireLogin,(req,res)=>{
     })
 })
 
-router.get('/allpost',(req,res)=>{
+router.get('/allpost',requireLogin,(req,res)=>{
     //populate will be used to populate data from id (second argument will specify what we want to show)
     Post.find().populate("postedBy","_id name").then((posts)=>{
         res.json({posts:posts})    
@@ -45,6 +46,35 @@ router.get('/myposts', requireLogin,(req,res)=>{
     })
     .catch((e)=>{
         console.log(e)
+    })
+})
+
+router.put('/like', requireLogin,(req,res)=>{
+    Post.findByIdAndUpdate(req.body.postId,{
+        $push:{likes:req.user._id}
+    },{
+        new:true
+    }).exec((err,result)=>{
+        if(err){
+            return res.status(422).json({error:err})
+        }else{
+            res.json(result)
+        }
+
+    })
+})
+router.put('/unlike', requireLogin,(req,res)=>{
+    Post.findByIdAndUpdate(req.body.postId,{
+        $pull:{likes:req.user._id}
+    },{
+        new:true
+    }).exec((err,result)=>{
+        if(err){
+            return res.status(422).json({error:err})
+        }else{
+            res.json(result)
+        }
+
     })
 })
 
