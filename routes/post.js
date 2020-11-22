@@ -31,8 +31,18 @@ router.post('/createpost',requireLogin,(req,res)=>{
 
 router.get('/allpost',requireLogin,(req,res)=>{
     //populate will be used to populate data from id (second argument will specify what we want to show)
-    Post.find().populate("postedBy","_id name")
-    .populate("comments.postedBy","_id name").then((posts)=>{
+    Post.find().populate("postedBy","_id name pic")
+    .populate("comments.postedBy","_id name pic").then((posts)=>{
+        res.json({posts:posts})    
+    }).catch((e)=>{
+        console.log(e)
+    })
+})
+
+router.get('/getmyfeed',requireLogin,(req,res)=>{
+    //populate will be used to populate data from id (second argument will specify what we want to show)
+    Post.find({postedBy:{$in:req.user.following}}).populate("postedBy","_id name pic")
+    .populate("comments.postedBy","_id name pic").then((posts)=>{
         res.json({posts:posts})    
     }).catch((e)=>{
         console.log(e)
@@ -41,7 +51,7 @@ router.get('/allpost',requireLogin,(req,res)=>{
 
 router.get('/myposts', requireLogin,(req,res)=>{
     Post.find({postedBy:req.user._id})
-    .populate("postedBy","_id name")
+    .populate("postedBy","_id name pic")
     .then(mypost=>{
         res.json({mypost})
     })
